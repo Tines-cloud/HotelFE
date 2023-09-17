@@ -1,0 +1,283 @@
+<div class="container-fluid p-3 d-flex justify-content">
+  
+    <div class="container">
+      <div class="col-16 float-end">
+        <div class="container-fluid p-3">
+          <button type="button" class="btn btn-outline-primary" (click)="open(content)">
+            <i class="bi bi-plus-square-fill"></i> Add Hotel
+          </button>
+        </div>  
+    </div>
+    <div class="container-fluid p-3">
+      <input class="form-control mt-2 mb-2" type="text" [(ngModel)]="searchText"  (input)="Search()" placeholder="Search by name" /> 
+      <table id="dtBasicExample" class="table table-striped table-bordered table-sm" cellspacing="0" width="100%">
+            <thead class="">
+              <tr>
+                <th scope="col">No</th>
+                <th scope="col">Hotel Id</th>
+                <th scope="col">Hotel Name</th>
+                <th scope="col">Location</th>
+                <th scope="col">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let hotel of hotels| slice: (page-1) * pageSize : page * pageSize let i=index " >
+                    <td>{{i+1+(page-1)*pageSize}}</td>
+                    <td>{{hotel.id}}</td>
+                    <td>{{hotel.name}}</td>
+                    <td>{{hotel.location}}</td>
+                    <td>
+                      <button type="button" class="btn btn-outline-primary btn-space" (click)="view(content_view,hotel.id)">
+                        <i class="bi bi-eye-fill"></i>
+                      </button>
+                      <button type="button" class="btn btn-outline-primary btn-space" (click)="view(content_update,hotel.id)">
+                        <i class="bi bi-pencil-square"></i>
+                      </button>
+                      <button type="button" class="btn btn-outline-primary btn-space" (click)="view(content_delete,hotel.id)">
+                        <i class="bi bi-trash3-fill"></i>
+                      </button>
+                    </td>
+                </tr>
+            </tbody>
+          </table>
+          <ngb-pagination class="d-flex justify-content-center" [(page)]="page" [pageSize]="pageSize" [collectionSize]="hotels.length"></ngb-pagination>
+    </div>
+    </div>
+  </div>
+  
+  <ng-template #content let-modal>
+    <div class="modal-header">
+      <h4 class="modal-title" id="modal-basic-title">Add Hotel</h4>
+      <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+      <form> 
+        <div class="mb-3">
+          <form [formGroup]="modalForm" (submit)="onSubmit(content_error_add)">
+            <div class="form-group">
+              <label for="HotelId">Hotel Id</label>
+              <input type="text" class="form-control" id="HotelId" placeholder="Enter Hotel Id"
+              formControlName="hotelId">
+             
+              <div *ngIf="f['hotelId'].touched && f['hotelId'].invalid" style="margin-top: 10px;color: red;">
+                *Hotel Id is required.
+              </div>   
+
+            </div>
+            <div class="form-group">
+              <label for="HotelName">Hotel Name</label>
+              <input type="text" class="form-control" id="HotelName" placeholder="Enter Hotel Name"
+             formControlName="hotelName">
+
+             <div *ngIf="f['hotelName'].touched && f['hotelName'].invalid" style="margin-top: 10px;color: red;">
+              *Hotel Name is required.
+            </div> 
+
+            </div>
+            <div class="form-group">
+              <label for="Location">Loaction</label>
+              <input type="text" class="form-control" id="Location" placeholder="Enter Loaction"
+              formControlName="location">
+              
+              <div *ngIf="f['location'].touched && f['location'].invalid" style="margin-top: 10px;color: red;">
+                *Location is required.
+              </div> 
+
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" (click)="modal.close()">
+                Close
+              </button>
+              <button type="submit" [disabled]="modalForm.invalid" class="btn btn-primary">Save</button>
+            </div>           
+          </form>
+        </div>
+      </form>
+    </div>
+  </ng-template>
+
+  <ng-template #content_error_add let-modal>
+    <div class="modal-header">
+      <h4 class="modal-title" id="modal-basic-title">Error</h4>
+      <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+      <form>
+        <div class="mb-3">
+          <form>
+            <div class="container">
+              <p>Hotel Id - <span style="color:red">{{hotel.id}} </span> is already exist.</p>
+        
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" (click)="modal.close()">Cancel</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </form>
+    </div>
+  </ng-template>
+
+  <ng-template #content_view let-modal>
+    <div class="modal-header">
+      <h4 class="modal-title" id="modal-basic-title">View Hotel</h4>
+      <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+      <form>
+        <div class="mb-3">
+          <form>
+            <div class="form-group">
+              <label for="HotelId">Hotel Id</label>
+              <input type="text" class="form-control" id="HotelId" aria-describedby="HotelId" placeholder="Enter Hotel Id"
+              name="hotelId" [(ngModel)]="hotel.id" disabled="">
+            </div>
+            <div class="form-group">
+              <label for="HotelName">Hotel Name</label>
+              <input type="text" class="form-control" id="HotelName" placeholder="Enter Hotel Name"
+              name="name" [(ngModel)]="hotel.name" disabled="">
+            </div>
+            <div class="form-group">
+              <label for="Loaction">Loaction</label>
+              <input type="text" class="form-control" id="Loaction" placeholder="Enter Loaction"
+              name="location" [(ngModel)]="hotel.location"disabled="">
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" (click)="modal.close()">
+                Close
+              </button>
+            </div>           
+          </form>
+        </div>
+      </form>
+    </div>
+  </ng-template>
+
+  <ng-template #content_update let-modal>
+    <div class="modal-header">
+      <h4 class="modal-title" id="modal-basic-title">Update Hotel</h4>
+      <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    </div>  
+    
+    <div class="modal-body">
+      <form>
+        <div class="mb-3">
+          <form [formGroup]="modalForm" (submit)="onSubmitUpdates(hotel.id)">
+            <div class="form-group">
+              <label for="HotelId">Hotel Id</label>
+              <input type="text" class="form-control" id="HotelId" aria-describedby="HotelId" placeholder="Enter Hotel Id"
+              formControlName="hotelId" [(ngModel)]="hotel.id" [attr.disabled]="true">
+              <div *ngIf="f['hotelId'].touched && f['hotelId'].invalid" style="margin-top: 10px;color: red;">
+                *Hotel Id is required.
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="HotelName">Hotel Name</label>
+              <input type="text" class="form-control" id="HotelName" placeholder="Enter Hotel Name"
+              formControlName="hotelName" [(ngModel)]="hotel.name">
+
+              <div *ngIf="f['hotelName'].touched && f['hotelName'].invalid" style="margin-top: 10px;color: red;">
+                *Hotel Name is required.
+              </div> 
+            </div>
+            <div class="form-group">
+              <label for="Loaction">Loaction</label>
+              <input type="text" class="form-control" id="Loaction" placeholder="Enter Loaction"
+              formControlName="location" [(ngModel)]="hotel.location">
+              <div *ngIf="f['location'].touched && f['location'].invalid" style="margin-top: 10px;color: red;">
+                *location is required.
+              </div> 
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" (click)="modal.close()">
+                Close
+              </button>
+              <button type="submit" [disabled]="modalForm.invalid" class="btn btn-primary">Update</button>
+            </div>           
+          </form>
+        </div>
+      </form>
+    </div>
+  </ng-template>
+
+  <ng-template #content_error_delete let-modal>
+    <div class="modal-header">
+      <h4 class="modal-title" id="modal-basic-title">Error</h4>
+      <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+      <form>
+        <div class="mb-3">
+          <form>
+            <div class="container">
+              <p>Hotel Id - <span style="color:red">{{hotel.id}} </span> is sync with contract.
+              <p *ngFor="let contract of contracts"> contract id : {{contract.id}}</p>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" (click)="modal.close()">Cancel</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </form>
+    </div>
+  </ng-template>
+
+  <ng-template #content_delete let-modal>
+    <div class="modal-header">
+      <h4 class="modal-title" id="modal-basic-title">Delete Hotel</h4>
+      <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+      <form>
+        <div class="mb-3">
+          <form>
+            <div class="form-group">
+              <label for="HotelId">Hotel Id</label>
+              <input type="text" class="form-control" id="HotelId" aria-describedby="HotelId" placeholder="Enter Hotel Id"
+              name="hotelId" [(ngModel)]="hotel.id" disabled="">
+            </div>
+            <div class="form-group">
+              <label for="HotelName">Hotel Name</label>
+              <input type="text" class="form-control" id="HotelName" placeholder="Enter Hotel Name"
+              name="name" [(ngModel)]="hotel.name" disabled="">
+            </div>
+            <div class="form-group">
+              <label for="Loaction">Loaction</label>
+              <input type="text" class="form-control" id="Loaction" placeholder="Enter Loaction"
+              name="location" [(ngModel)]="hotel.location" disabled="">
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" (click)="modal.close()">
+                Close
+              </button>
+              <button type="submit" class="btn btn-primary" (click)="confirmDelete(content_confirm,hotel.id)">Delete</button>
+            </div>           
+          </form>
+        </div>
+      </form>
+    </div>
+  </ng-template>
+
+  <ng-template #content_confirm let-modal>
+    <div class="modal-header">
+      <h4 class="modal-title" id="modal-basic-title">Delete Hotel</h4>
+      <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+      <form>
+        <div class="mb-3">
+          <form (ngSubmit)="onDeleteSubmit(content_error_delete,hotel.id)">
+            <div class="container">
+              <h3>Delete Hotel</h3>
+              <p>Are you sure you want to delete {{hotel.name}} ....?</p>
+        
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" (click)="modal.close()">Cancel</button>
+                <button type="submit" class="btn btn-primary">Delete</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </form>
+    </div>
+  </ng-template>

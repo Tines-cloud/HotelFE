@@ -1,0 +1,428 @@
+<div class="container-fluid p-3 d-flex justify-content">
+  
+    <div class="container">
+      <div class="col-16 float-end">
+        <div class="container-fluid p-3">
+          <button type="button" class="btn btn-outline-primary" (click)="open(content)">
+            <i class="bi bi-plus-square-fill"></i> Add Room Type
+          </button>
+        </div>
+      </div>
+    <div class="container-fluid p-3">
+      <input class="form-control mt-2 mb-2" type="text" [(ngModel)]="searchText"  (input)="Search()" placeholder="Search by name" /> 
+      <table id="dtBasicExample" class="table table-striped table-bordered table-sm" cellspacing="0" width="100%">
+            <thead class="">
+              <tr>
+                <th scope="col">No</th>
+                <th scope="col">Room Type Id</th>
+                <th scope="col">Name</th>
+                <th scope="col">Max Adult</th>
+                <th scope="col">Price Per Adult</th>
+                <th scope="col">Total Rooms</th>
+                <th scope="col">Reserved Rooms</th>
+                <th scope="col">Available Rooms</th>
+                <th scope="col">Contract Id</th>
+                <th scope="col">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let roomType of roomTypes| slice: (page-1) * pageSize : page * pageSize let i=index " >
+                    <td>{{i+1+(page-1)*pageSize}}</td>
+                    <td>{{roomType.id}}</td>
+                    <td>{{roomType.name}}</td>
+                    <td>{{roomType.maxAdult}}</td>
+                    <td>{{roomType.pricePerAdult}}</td>
+                    <td>{{roomType.totalRooms}}</td>
+                    <td>{{roomType.reservedRooms}}</td>
+                    <td>{{roomType.totalRooms-roomType.reservedRooms}}</td>
+                    <td>{{roomType.contract.id}}</td>
+                    <td>
+                      <button type="button" class="btn btn-outline-primary btn-space" (click)="view(content_view,roomType.id)">
+                        <i class="bi bi-eye-fill"></i>
+                      </button>
+                      <button type="button" class="btn btn-outline-primary btn-space" (click)="view(content_update,roomType.id)" >
+                        <i class="bi bi-pencil-square"></i>
+                      </button>
+                      <button type="button" class="btn btn-outline-primary btn-space" (click)="view(content_delete,roomType.id)">
+                        <i class="bi bi-trash3-fill"></i>
+                      </button>
+                    </td>
+                </tr>
+            </tbody>
+          </table>
+          <ngb-pagination class="d-flex justify-content-center" [(page)]="page" [pageSize]="pageSize" [collectionSize]="roomTypes.length"></ngb-pagination>
+    </div>
+    </div>
+  </div>
+  
+  <ng-template #content let-modal>
+    <div class="modal-header">
+      <h4 class="modal-title" id="modal-basic-title">Add Room Type</h4>
+      <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+      <form>
+        <div class="mb-3">
+          <form [formGroup]="modalForm" (submit)="onSubmit(content_error_add1,content_error_add2)"> 
+            <div class="form-group">
+              <label for="roomTypeId">Room Type Id</label>
+              <input type="text" class="form-control" id="roomTypeId" aria-describedby="RoomTypeId" placeholder="Enter Room Type Id"
+              formControlName="roomTypeId">
+
+              <div *ngIf="f['roomTypeId'].touched && f['roomTypeId'].invalid" style="margin-top: 10px;color: red;">
+                <div *ngIf="f['roomTypeId'].errors && f['roomTypeId'].errors['required']">*Room type id is required.</div>
+              </div>
+            </div>
+
+            <div class="form-group">
+                <label for="name">Name</label>
+                <input type="text" class="form-control" id="name" aria-describedby="Name" placeholder="Enter Name"
+                formControlName="name">
+                <div *ngIf="f['name'].touched && f['name'].invalid" style="margin-top: 10px;color: red;">
+                  <div *ngIf="f['name'].errors && f['name'].errors['required']">*Name is required.</div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="maxAdult">Maximum Adult Count</label>
+                <input type="text" class="form-control" id="maxAdult" aria-describedby="maxAdult" placeholder="Enter maximum adult count"
+                formControlName="maxAdult">
+
+                <div *ngIf="f['maxAdult'].touched && f['maxAdult'].invalid" style="margin-top: 10px;color: red;">
+                  <div *ngIf="f['maxAdult'].errors && f['maxAdult'].errors['required']">*Maximum adult count is required.</div>
+                  <div *ngIf="f['maxAdult'].errors && f['maxAdult'].errors['pattern']">*Maximum adult count be a number.</div>
+                  <div *ngIf="f['maxAdult'].errors && f['maxAdult'].errors['min']">*Minimum adult count is 1.</div>
+                  <div *ngIf="f['maxAdult'].errors && f['maxAdult'].errors['max']">*Maximum adult count is 3.</div>
+                </div>
+              </div>
+            
+              <div class="form-group">
+                <label for="pricePerAdult">Price per Adult</label>
+                <input type="text" class="form-control" id="pricePerAdult" aria-describedby="pricePerAdult" placeholder="Enter Price Per Adult"
+                formControlName="pricePerAdult">
+
+                <div *ngIf="f['pricePerAdult'].touched && f['pricePerAdult'].invalid" style="margin-top: 10px;color: red;">
+                  <div *ngIf="f['pricePerAdult'].errors && f['pricePerAdult'].errors['required']">*Price per adult is required.</div>
+                  <div *ngIf="f['pricePerAdult'].errors && f['pricePerAdult'].errors['pattern']">*Price per adult should be a number.</div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="totalRooms">Total Rooms</label>
+                <input type="text" class="form-control" id="totalRooms" aria-describedby="totalRooms" placeholder="Enter Total Rooms"
+                formControlName="totalRooms">
+                <div *ngIf="f['totalRooms'].touched && f['totalRooms'].invalid" style="margin-top: 10px;color: red;">
+                  <div *ngIf="f['totalRooms'].errors && f['totalRooms'].errors['required']">*Total room count is required.</div>
+                  <div *ngIf="f['totalRooms'].errors && f['totalRooms'].errors['pattern']">*Total room count should be a number.</div>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="reservedRooms">Reserved Rooms</label>
+                <input type="text" class="form-control" id="reservedRooms" aria-describedby="reservedRooms" placeholder="Enter Reserved Rooms"
+                formControlName="reservedRooms">
+                <div *ngIf="f['reservedRooms'].touched && f['reservedRooms'].invalid" style="margin-top: 10px;color: red;">
+                  <div *ngIf="f['reservedRooms'].errors && f['reservedRooms'].errors['required']">*Reserved Rooms count is required.</div>
+                  <div *ngIf="f['reservedRooms'].errors && f['reservedRooms'].errors['pattern']">*Reserved rooms count should be a number.</div>
+                </div>
+              </div>
+            <div class="form-group">
+                <label for="contractId">Contract Id</label>
+                <select formControlName="contractId" id="contractId" class="form-select">
+                  <option  value="">Select Hotel Id</option>
+                  <option  *ngFor="let contract of contracts">{{contract.id}}</option>
+                </select>
+                <div *ngIf="f['contractId'].touched && f['contractId'].invalid" style="margin-top: 10px;color: red;">
+                  <div *ngIf="f['contractId'].errors && f['contractId'].errors['required']">*Contract id is required.</div>
+                </div>
+              </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" (click)="modal.close()">
+                Close
+              </button>
+              <button type="submit" [disabled]="modalForm.invalid" class="btn btn-primary">Save</button>
+            </div>           
+          </form>
+        </div>
+      </form>
+    </div>
+  </ng-template>
+
+
+  <ng-template #content_error_add1 let-modal>
+    <div class="modal-header">
+      <h4 class="modal-title" id="modal-basic-title">Error</h4>
+      <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+      <form>
+        <div class="mb-3">
+          <form>
+            <div class="container">
+              <p>Room type id - <span style="color:red">{{roomType.id}} </span> is already exist.</p>
+        
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" (click)="modal.close()">Cancel</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </form>
+    </div>
+  </ng-template>
+
+  <ng-template #content_error_add2 let-modal>
+    <div class="modal-header">
+      <h4 class="modal-title" id="modal-basic-title">Error</h4>
+      <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+      <form>
+        <div class="mb-3">
+          <form>
+            <div class="container">
+              <p>Hotel <span style="color:red">Total Rooms</span> must be grater than <span style="color:red">Reserved Rooms</span></p>   
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" (click)="modal.close()">Cancel</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </form>
+    </div>
+  </ng-template>
+
+   <ng-template #content_view let-modal>
+    <div class="modal-header">
+      <h4 class="modal-title" id="modal-basic-title">View Room Type</h4>
+      <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+      <form>
+        <div class="mb-3">
+          <form>
+            <div class="form-group">
+                <label for="roomTypeId">Room Type Id</label>
+                <input type="text" class="form-control" id="roomTypeId" aria-describedby="RoomTypeId" disabled=""
+                name="roomTypeId" [(ngModel)]="roomType.id">
+              </div>
+  
+              <div class="form-group">
+                  <label for="name">Name</label>
+                  <input type="text" class="form-control" id="name" aria-describedby="Name" disabled=""
+                  name="name" [(ngModel)]="roomType.name">
+                </div>
+  
+                <div class="form-group">
+                  <label for="maxAdult">Max Adult</label>
+                  <input type="text" class="form-control" id="roomTypeId" aria-describedby="MaxAdult" disabled=""
+                  name="maxAdult" [(ngModel)]="roomType.maxAdult">
+                </div>
+  
+                <div class="form-group">
+                  <label for="pricePerAdult">Price per Adult</label>
+                  <input type="text" class="form-control" id="pricePerAdult" aria-describedby="pricePerAdult" disabled=""
+                  name="pricePerAdult" [(ngModel)]="roomType.pricePerAdult">
+                </div>
+  
+                <div class="form-group">
+                  <label for="totalRooms">Total Rooms</label>
+                  <input type="text" class="form-control" id="totalRooms" aria-describedby="totalRooms" disabled=""
+                  name="totalRooms" [(ngModel)]="roomType.totalRooms">
+                </div>
+                <div class="form-group">
+                  <label for="reservedRooms">Reserved Rooms</label>
+                  <input type="text" class="form-control" id="reservedRooms" aria-describedby="reservedRooms" disabled=""
+                  name="reservedRooms" [(ngModel)]="roomType.reservedRooms">
+                </div>
+                <div class="form-group">
+                  <label for="availableRooms">Available Rooms</label>
+                  <input type="text" class="form-control" id="availableRooms" aria-describedby="availableRooms" disabled=""
+                  name="availableRooms" [(ngModel)]="roomType.totalRooms-roomType.reservedRooms">
+                </div>
+                <div class="form-group">
+                    <label for="ContractId">Contract</label>
+                    <input type="text" class="form-control" id="ContractId" aria-describedby="ContractId" disabled=""
+                    name="ContractId" [(ngModel)]="roomType.contract.id">
+                  </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" (click)="modal.close()">
+                Close
+              </button>
+            </div>           
+          </form>
+        </div>
+      </form>
+    </div>
+  </ng-template>
+
+  <ng-template #content_update let-modal>
+    <div class="modal-header">
+      <h4 class="modal-title" id="modal-basic-title">Update Room Type</h4>
+      <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+      <form>
+        <div class="mb-3">
+          <form [formGroup]="modalForm" (submit)="onSubmitUpdateRoomType(content_error_add2)">
+            <div class="form-group">
+              <label for="roomTypeId">Room Type Id</label>
+              <input type="text" class="form-control" id="roomTypeId" aria-describedby="RoomTypeId" placeholder="Enter Room Type Id"
+              formControlName="roomTypeId" [(ngModel)]="roomType.id" [attr.disabled]="true">
+
+              <div *ngIf="f['roomTypeId'].touched && f['roomTypeId'].invalid" style="margin-top: 10px;color: red;">
+                <div *ngIf="f['roomTypeId'].errors && f['roomTypeId'].errors['required']">*Room type id is required.</div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="name">Name</label>
+              <input type="text" class="form-control" id="name" aria-describedby="Name" placeholder="Enter Name"
+              formControlName="name" [(ngModel)]="roomType.name">
+              <div *ngIf="f['name'].touched && f['name'].invalid" style="margin-top: 10px;color: red;">
+                <div *ngIf="f['name'].errors && f['name'].errors['required']">*Name is required.</div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="maxAdult">Maximum Adult Count</label>
+              <input type="text" class="form-control" id="maxAdult" aria-describedby="maxAdult" placeholder="Enter maximum adult count"
+              formControlName="maxAdult" [(ngModel)]="roomType.maxAdult">
+              
+              <div *ngIf="f['maxAdult'].touched && f['maxAdult'].invalid" style="margin-top: 10px;color: red;">
+                <div *ngIf="f['maxAdult'].errors && f['maxAdult'].errors['required']">*Maximum adult count is required.</div>
+                <div *ngIf="f['maxAdult'].errors && f['maxAdult'].errors['pattern']">*Maximum adult count should be a number.</div>
+                <div *ngIf="f['maxAdult'].errors && f['maxAdult'].errors['min']">*Minimum adult count is 1.</div>
+                <div *ngIf="f['maxAdult'].errors && f['maxAdult'].errors['max']">*Maximum adult count is 3.</div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="pricePerAdult">Price per Adult</label>
+              <input type="text" class="form-control" id="pricePerAdult" aria-describedby="pricePerAdult" placeholder="Enter Price Per Adult"
+              formControlName="pricePerAdult" [(ngModel)]="roomType.pricePerAdult">
+
+              <div *ngIf="f['pricePerAdult'].touched && f['pricePerAdult'].invalid" style="margin-top: 10px;color: red;">
+                <div *ngIf="f['pricePerAdult'].errors && f['pricePerAdult'].errors['required']">*Price per adult is required.</div>
+                <div *ngIf="f['pricePerAdult'].errors && f['pricePerAdult'].errors['pattern']">*Price per adult should be a number.</div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="totalRooms">Total Rooms</label>
+              <input type="text" class="form-control" id="totalRooms" aria-describedby="totalRooms" placeholder="Enter Total Rooms"
+              formControlName="totalRooms" [(ngModel)]="roomType.totalRooms">
+              <div *ngIf="f['totalRooms'].touched && f['totalRooms'].invalid" style="margin-top: 10px;color: red;">
+                <div *ngIf="f['totalRooms'].errors && f['totalRooms'].errors['required']">*Total room count is required.</div>
+                <div *ngIf="f['totalRooms'].errors && f['totalRooms'].errors['pattern']">*Total room count should be a number.</div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="reservedRooms">Reserved Rooms</label>
+              <input type="text" class="form-control" id="reservedRooms" aria-describedby="reservedRooms" placeholder="Enter Reserved Rooms"
+              formControlName="reservedRooms" [(ngModel)]="roomType.reservedRooms">
+              <div *ngIf="f['reservedRooms'].touched && f['reservedRooms'].invalid" style="margin-top: 10px;color: red;">
+                <div *ngIf="f['reservedRooms'].errors && f['reservedRooms'].errors['required']">*Reserved Rooms count is required.</div>
+                <div *ngIf="f['reservedRooms'].errors && f['reservedRooms'].errors['pattern']">*Reserved rooms count should be a number.</div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="contractId">Contract Id</label>
+              <select formControlName="contractId" id="contractId" class="form-select" [(ngModel)]="roomType.contract.id">
+                <option>{{roomType.contract.id}}</option>
+                <option  *ngFor="let contract of contracts">{{contract.id}}</option>
+              </select>
+              <div *ngIf="f['contractId'].touched && f['contractId'].invalid" style="margin-top: 10px;color: red;">
+                <div *ngIf="f['contractId'].errors && f['contractId'].errors['required']">*Contract id is required.</div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" (click)="modal.close()">
+                Close
+              </button>
+              <button type="submit" [disabled]="modalForm.invalid" class="btn btn-primary">Update</button>
+            </div>           
+          </form>
+        </div>
+      </form>
+    </div>
+  </ng-template>
+
+  <ng-template #content_delete let-modal>
+    <div class="modal-header">
+      <h4 class="modal-title" id="modal-basic-title">Delete Room Type</h4>
+      <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+      <form>
+        <div class="mb-3">
+          <form>
+            <div class="form-group">
+                <label for="roomTypeId">Room Type Id</label>
+                <input type="text" class="form-control" id="roomTypeId" aria-describedby="RoomTypeId" disabled=""
+                name="roomTypeId" [(ngModel)]="roomType.id">
+              </div>
+  
+              <div class="form-group">
+                  <label for="name">Name</label>
+                  <input type="text" class="form-control" id="name" aria-describedby="Name" disabled=""
+                  name="name" [(ngModel)]="roomType.name">
+                </div>
+  
+                <div class="form-group">
+                  <label for="maxAdult">Max Adult</label>
+                  <input type="text" class="form-control" id="roomTypeId" aria-describedby="MaxAdult" disabled=""
+                  name="maxAdult" [(ngModel)]="roomType.maxAdult">
+                </div>
+  
+                <div class="form-group">
+                  <label for="pricePerAdult">Price per Adult</label>
+                  <input type="text" class="form-control" id="pricePerAdult" aria-describedby="pricePerAdult" disabled=""
+                  name="pricePerAdult" [(ngModel)]="roomType.pricePerAdult">
+                </div>
+  
+                <div class="form-group">
+                  <label for="totalRooms">Total Rooms</label>
+                  <input type="text" class="form-control" id="totalRooms" aria-describedby="totalRooms" disabled=""
+                  name="totalRooms" [(ngModel)]="roomType.totalRooms">
+                </div>
+                <div class="form-group">
+                  <label for="reservedRooms">Reserved Rooms</label>
+                  <input type="text" class="form-control" id="reservedRooms" aria-describedby="reservedRooms" disabled=""
+                  name="reservedRooms" [(ngModel)]="roomType.reservedRooms">
+                </div>
+                <div class="form-group">
+                    <label for="ContractId">Contract</label>
+                    <input type="text" class="form-control" id="ContractId" aria-describedby="ContractId" disabled=""
+                    name="ContractId" [(ngModel)]="roomType.contract.id">
+                  </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" (click)="modal.close()">
+                Close
+              </button>
+              <button type="submit" class="btn btn-primary" (click)="confirmDelete(content_confirm,roomType.id)">Delete</button>
+            </div>           
+          </form>
+        </div>
+      </form>
+    </div>
+  </ng-template>
+
+  <ng-template #content_confirm let-modal>
+    <div class="modal-header">
+      <h4 class="modal-title" id="modal-basic-title">Delete Room type</h4>
+      <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+      <form>
+        <div class="mb-3">
+          <form (ngSubmit)="onDeleteSubmit(roomType.id)">
+            <div class="container">
+              <h3>Delete Room Type</h3>
+              <p>Are you sure you want to delete {{roomType.name}} ....?</p>
+        
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" (click)="modal.close()">Cancel</button>
+                <button type="submit" class="btn btn-primary">Delete</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </form>
+    </div>
+  </ng-template>

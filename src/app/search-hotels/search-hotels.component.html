@@ -1,0 +1,68 @@
+<div class="container p-5">
+    <div class="row">
+      <div class="col-12">
+        <form [formGroup]="form" (submit)="submit()">
+          <div class="card">
+            <div class="card-header">Search Hotel Rooms</div>
+            <div class="card-body">
+              <div class="row">
+                <div class="form-group col-6">
+                  <label>Check In Date</label>
+                  <input #licenseExpiration="ngbDatepicker"
+                    class="form-control" formControlName="checkInDate" ngbDatepicker (click)="licenseExpiration.toggle()"/>
+                    <div *ngIf="f['checkInDate'].touched && f['checkInDate'].invalid" class="alert-danger" style="margin-top: 10px;color: red;">
+                      *Check in Date is required.
+                   </div>
+                </div>
+                <div class="form-group col-6">
+                  <label>No of Nights</label>
+                  <select class="form-control" formControlName="noOfNights" >
+                    <option *ngFor='let in of counter(10) ;let i = index' value="{{i+1}}"> {{i+1}} </option>           
+                  </select>
+                  <div *ngIf="f['noOfNights'].touched && f['noOfNights'].invalid" style="margin-top: 10px;color: red;">
+                    *No of Nights is required.
+                  </div>       
+                </div>
+              </div>
+            </div>
+            <div class="card-header">Room Requirement</div>
+            <div class="card-body" formArrayName="room">
+              <div class="row">
+                <div class="col-6 p-1" *ngFor="let room of roomFormGroup.controls; let i = index;">
+                  <div [formGroupName]="i" class="row">
+                    <div class="form-group col-3">
+                      <label>1 room with </label>
+                    </div>
+                    <div class="form-group col-3">
+                        <select class="form-control" formControlName="countOfAdult" >
+                            <option value="1"> 1 </option>
+                            <option value="2"> 2 </option>
+                            <option value="3"> 3 </option>       
+                        </select>
+                        
+                    </div>
+                    <div class="form-group col-1 text-right">
+                      <button class="btn btn-danger btn-close" type="button" (click)="removeRoom(i)"> </button>
+                    </div>
+                    
+                    <div *ngIf="getRoomFormGroup(i).controls['countOfAdult'].touched && getRoomFormGroup(i).controls['countOfAdult'].hasError('required')" style="margin-top: 10px;color: red;">
+                      *No of adult is required.</div>
+                    </div>                
+                </div>  
+                <div style="margin-top: 10px;color: red;">
+                  <div *ngIf="roomFormGroup.controls.length<=0"> *Room field with value required.
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="col-16 float-end">
+                <button class="btn btn-primary m-1" type="button" (click)="addRoom()"> Add Room </button>
+                <button class="btn btn-success m-1" [disabled]="form.invalid" type="submit"> Search Hotel Rooms </button>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>

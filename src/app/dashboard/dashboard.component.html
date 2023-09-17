@@ -1,0 +1,17 @@
+<ngb-carousel *ngIf="images">
+    <ng-template ngbSlide>
+      <div class="picsum-img-wrapper">
+        <img [src]="'assets/img/3.jpg'" alt="Random first slide" style="width: 100%; height: 88vh">
+      </div>
+    </ng-template>
+    <ng-template ngbSlide>
+      <div class="picsum-img-wrapper">
+        <img [src]="'assets/img/4.jpg'" alt="Random second slide" style="width: 100%; height: 88vh">
+      </div>
+    </ng-template>
+    <ng-template ngbSlide>
+      <div class="picsum-img-wrapper">
+        <img [src]="'assets/img/5.jpg'" alt="Random third slide" style="width: 100%; height: 88vh">
+      </div>
+    </ng-template>
+  </ngb-carousel>

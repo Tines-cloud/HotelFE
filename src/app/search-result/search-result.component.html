@@ -1,0 +1,63 @@
+<div class="text-center col-md-16">
+    <div class="container p-3" *ngIf="isEmpty">
+        <div class="container p-2 text-center">
+            <div class="row" >
+                <h2 > Available Hotel Rooms </h2>
+            </div>
+        </div>
+          <div class="row">
+            <div class="w-auto p-2" *ngFor="let result of searchResults; let i=index">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">{{result.hotelName}}</h5>
+                        <p class="card-text">{{result.location}}</p>    
+                        <div class="row">              
+                                <div class="w-auto p-2" *ngFor="let room of result.roomDetails">
+                                    <div class="card" style="width: 250px;">
+                                        <img [src]="'assets/img/images.jpg'" class="card-img-top" alt="Sample Image">
+                                        <div class="card-body text-center">
+                                            <p class="card-text">Room Type : {{room.roomType}}</p>
+                                            <p class="card-text">Total Price : ${{room.totalCost}}</p>
+                                            <a href="#" class="btn btn-primary">Book</a>
+                                        </div>
+                                    </div>
+                                </div>
+                        </div>
+                    </div>
+                </div>
+            </div>       
+        </div>
+    </div>
+</div>
+
+<div class="container p-3 " *ngIf="!isEmpty" style="margin-top: 25px;">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="error-template">
+                <h1>
+                    Sorry !</h1>
+                <h2>No rooms Available</h2>
+                <div class="card-body text-center">
+                    <div class="col d-flex justify-content-center">
+                        <div class="row">              
+                            <div class="card text-center" style="width: 250px;">
+                                <div class="card-body ">
+                                    <p class="card-text"><label>Check In Date : {{date}}</label></p> 
+                                    <p class="card-text"><label>No of Days : {{noOfDays}}</label></p>
+                                    <p class="card-text"><label>No of Rooms : {{roomCount}}</label></p>
+                                    <p class="card-text"><label>Adult Count  : {{adultCount}}</label></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="error-actions">
+                        <a routerLink="/serachHotel" class="btn btn-primary btn-lg"><span class="glyphicon glyphicon-home"></span>
+                            Search Hotel </a>
+                    </div>
+                </div>
+            </div >      
+        </div>
+    </div>
+</div>      
+
+<div class="container p-3 "></div>
